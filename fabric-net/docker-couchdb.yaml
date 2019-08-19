@@ -1,0 +1,49 @@
+version: '2'
+
+networks: 
+  example: 
+
+services:
+  couchdb.peer0.org1.example.com:
+    container_name: couchdb.peer0.org1.example.com
+    image: ${RESPOSITY}/fabric-couchdb:0.4.10
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 5984:5984
+    networks:
+      - example
+  
+  couchdb.peer1.org1.example.com:
+    container_name: couchdb.peer1.org1.example.com
+    image: ${RESPOSITY}/fabric-couchdb:0.4.10
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 6984:5984
+    networks:
+      - example
+  
+  couchdb.peer0.org2.example.com:
+    container_name: couchdb.peer0.org2.example.com
+    image: ${RESPOSITY}/fabric-couchdb:0.4.10
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 7984:5984
+    networks:
+      - example
+  
+  couchdb.peer1.org2.example.com:
+    container_name: couchdb.peer1.org2.example.com
+    image: ${RESPOSITY}/fabric-couchdb:0.4.10
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 8984:5984
+    networks:
+      - example

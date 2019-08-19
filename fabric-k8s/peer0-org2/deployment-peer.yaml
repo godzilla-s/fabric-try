@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: peer0-org2
+  namespace: org2
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: peer0-org2
+  template:
+    metadata:
+      labels:
+        app: peer0-org2
+    spec:
+      volumes:
+        - name: peer-cert
+          secret:
+            secretName: hlf-org2-peer0-idcert 
+        - name: peer-key
+          secret:
+            secretName: hlf-org2-peer0-idkey 
+        - name: peer-root-ca
+          secret:
+            secretName: hlf-org2-peer0-root-ca
+        - name: peer-root-tlsca
+          secret:
+            secretName: hlf-org2-peer0-root-tlsca
+        - name: peer-admin-cert
+          secret:
+            secretName: hlf-org2-peer0-admin-cert
+        - name: peer-tls-pair
+          secret:
+            secretName: hlf-org2-peer0-tls-pair
+        - name: peer-tls-crt 
+          secret:
+            secretName: hlf-org2-peer0-tls-ca
+      containers:
+      - name: peer0-org1
+        image: hyperledger/fabric-peer:1.4.1
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh 
+          - -c 
+          - |
+            peer node start
+        ports:
+        - containerPort: 7051
+          name: request
+          protocol: TCP 
+        - containerPort: 7053 
+          name: event
+          protocol: TCP 
+        envFrom:
+          - configMapRef:
+              name: peer0-org2-cm
+        volumeMounts:
+          - mountPath: /etc/hyperledger/fabric/peer/msp/signcerts 
+            name: peer-cert
+          - mountPath: /etc/hyperledger/fabric/peer/msp/keystore 
+            name: peer-key
+          - mountPath: /etc/hyperledger/fabric/peer/msp/cacerts
+            name: peer-root-ca
+          - mountPath: /etc/hyperledger/fabric/peer/msp/admincerts
+            name: peer-admin-cert
+          - mountPath: /etc/hyperledger/fabric/peer/msp/tlscacerts
+            name: peer-root-tlsca
+          - mountPath: /etc/hyperledger/fabric/tls/pair
+            name: peer-tls-pair 
+          - mountPath: /etc/hyperledger/fabric/tls 
+            name: peer-tls-crt
+        resources: {}

@@ -1,0 +1,27 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: example.com
+    Specs:
+      - Hostname: orderer
+
+PeerOrgs:
+  - Name: Org1
+    Domain: org1.example.com
+    EnableNodeOUs: true  # 注意，会影响加入通道和实例化链码
+    #Template:  # 使用模板
+    # Count: 2
+    Specs:
+      - Hostname: peer0
+      - Hostname: peer1
+      - Hostname: ca 
+    Users:
+      Count: 1
+  - Name: Org2
+    Domain: org2.example.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer0
+      - Hostname: peer1
+      - Hostname: ca 
+    Users:
+      Count: 1

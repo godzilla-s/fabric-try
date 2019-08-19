@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  fabric-ca-server:
+    image: hyperledger/fabric-ca:1.4.1
+    container_name: fabric-ca-server
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=fabric-ca-server
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/cacert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/cert.key
+      - FABRIC_CA_SERVER_CFG_AFFILIATIONS_ALLOWREMOVE=true  # 允许删除联盟关系
+      - FABRIC_CA_SERVER_CFG_IDENTITIES_ALLOWREMOVE=true  # 允许删除成员身份
+    command: fabric-ca-server start -b admin:adminpw
+    volumes:
+      - ./certs/ca:/etc/hyperledger/fabric-ca-server-config
+    ports:
+      - 7064:7054
+
+  fabric-tlsca-server:
+    image: hyperledger/fabric-ca:1.4.1
+    container_name: fabric-tlsca-server
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-tlsca-server
+      - FABRIC_CA_SERVER_CA_NAME=fabric-tlsca-server
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-tlsca-server-config/tlsca-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-tlsca-server-config/cert.key
+      - FABRIC_CA_SERVER_CFG_AFFILIATIONS_ALLOWREMOVE=true  # 允许删除联盟关系
+      - FABRIC_CA_SERVER_CFG_IDENTITIES_ALLOWREMOVE=true  # 允许删除成员身份
+    command: fabric-ca-server start -b admin:adminpw
+    volumes:
+      - ./certs/tlsca:/etc/hyperledger/fabric-tlsca-server-config
+    ports:
+      - 8064:7054
+

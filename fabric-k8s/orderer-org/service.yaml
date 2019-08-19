@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: orderer-org
+  namespace: orderer
+spec:
+  selector:
+    app: orderer-org
+  ports:
+  - port: 7050
+    targetPort: 7050
+    protocol: TCP 

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: peer0-org1
+  namespace: org1
+spec:
+  selector:
+    app: peer0-org1
+  ports:
+  - port: 7051
+    targetPort: 7051
+    name: request
+    protocol: TCP 
+  - port: 7053 
+    targetPort: 7053 
+    name: event
+    protocol: TCP 

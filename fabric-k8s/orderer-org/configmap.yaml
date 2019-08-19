@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orderer-org-cm
+  namespace: orderer
+data:
+  ORDERER_GENERAL_LOGLEVEL: "DEBUG"
+  ORDERER_GENERAL_LISTENADDRESS: "0.0.0.0"
+  ORDERER_GENERAL_GENESISMETHOD: "file"
+  ORDERER_GENERAL_GENESISFILE: "/var/hyperledger/orderer/genesis.block"
+  ORDERER_GENERAL_LOCALMSPID: "OrdererMSP"
+  ORDERER_GENERAL_LOCALMSPDIR: "/var/hyperledger/orderer/msp"
+  ORDERER_GENERAL_TLS_ENABLED: "true"
+  ORDERER_GENERAL_TLS_PRIVATEKEY: "/var/hyperledger/orderer/tls/pair/tls.key"
+  ORDERER_GENERAL_TLS_CERTIFICATE: "/var/hyperledger/orderer/tls/pair/tls.crt"
+  ORDERER_GENERAL_TLS_ROOTCAS: "/var/hyperledger/orderer/tls/ca.crt"

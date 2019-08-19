@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: org1-client
+  namespace: org1 
+spec:
+  selector:
+    matchLabels:
+      app: org1-client
+  template:
+    metadata:
+      labels:
+        app: org1-client
+    spec:
+      volumes:
+        - name: channel-file
+          secret:
+            secretName: hlf-channel-tx
+        - name: orderer-tls-ca
+          secret:
+            secretName: hlf-orderer-tlsca
+        - name: peer-tls-pair 
+          secret:
+            secretName: hlf-org1-peer0-tls-pair
+        - name: peer-tls-crt
+          secret:
+            secretName: hlf-org1-peer0-tls-ca
+        - name: admin-cert
+          secret:
+            secretName: hlf-org1-admin-cert
+        - name: admin-key 
+          secret:
+            secretName: hlf-org1-admin-key
+        - name: admin-ca 
+          secret:
+            secretName: hlf-org1-admin-ca
+        - name: admin-tlsca 
+          secret:
+            secretName: hlf-org1-admin-tlsca
+        - name: orderer-tlsca 
+          secret:
+            secretName: hlf-orderer-tlsca
+        - name: temp-cache 
+          hostPath:
+            path: /Users/zuvakin/workspace/src/fabric-try/fabric-k8s/temp 
+            type: DirectoryOrCreate 
+      containers:
+      - name: client
+        image: hyperledger/fabric-tools:1.4.1
+        imagePullPolicy: IfNotPresent 
+        workingDir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+        command:
+          - sh 
+          - -c 
+          - |
+            tail -f /dev/null
+        resources: {}
+        envFrom:
+          - configMapRef:
+              name: org1-client-cm
+        volumeMounts:
+          - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/tls/pair
+            name: peer-tls-pair
+          - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/tls
+            name: peer-tls-crt 
+          - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/admin/msp/signcerts 
+            name: admin-cert
+          - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/admin/msp/keystore 
+            name: admin-key 
+          - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/admin/msp/cacerts 
+            name: admin-ca
+          - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/admin/msp/tlscacerts
+            name: admin-tlsca
+          - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/admin/msp/admincerts
+            name: admin-cert
+          - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer 
+            name: orderer-tlsca
+          - mountPath: /opt/gopath/src/github.com/hyperledger/fabric
+            name: channel-file
+          - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/temp 
+            name: temp-cache

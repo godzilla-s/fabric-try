@@ -1,0 +1,23 @@
+[
+    {
+        "name": "collectionData0",
+        "policy": "OR('Org1MSP.member', 'Org2MSP.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 3,
+        "blockToLive":1000000
+    },
+    {
+        "name": "collectionData1",
+        "policy": "OR('Org1MSP.member', 'Org2MSP.member')",
+        "requiredPeerCount": 2,
+        "maxPeerCount": 3,
+        "blockToLive":1000000
+    },
+    {
+        "name": "collectionData2",
+        "policy": "OR('Org1MSP.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 3,
+        "blockToLive":1000000
+    }
+]

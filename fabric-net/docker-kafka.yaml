@@ -1,0 +1,145 @@
+version: '2'
+
+networks: 
+  example: 
+
+services:
+  zookeeper0:
+    container_name: zookeeper0
+    hostname: zookeeper0
+    image: ${RESPOSITY}/fabric-zookeeper:${ZOOKEEPER_TAG}
+    restart: always
+    environment:
+      - ZOO_MY_ID=1
+      - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:4888:5888 server.3=zookeeper2:6888:7888
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_example  # 自定义网络
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    networks: 
+      - example
+
+  zookeeper1:
+    container_name: zookeeper1
+    hostname: zookeeper1
+    image: ${RESPOSITY}/fabric-zookeeper:${ZOOKEEPER_TAG}
+    restart: always
+    environment:
+      - ZOO_MY_ID=2
+      - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:4888:5888 server.3=zookeeper2:6888:7888
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_example
+    ports:
+      - 4181:2181
+      - 4888:2888
+      - 5888:3888
+    networks: 
+      - example
+
+  zookeeper2:
+    container_name: zookeeper2
+    hostname: zookeeper2
+    image: ${RESPOSITY}/fabric-zookeeper:${ZOOKEEPER_TAG}
+    restart: always
+    environment:
+      - ZOO_MY_ID=3
+      - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:4888:5888 server.3=zookeeper2:6888:7888
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_example
+    ports:
+      - 6181:2181
+      - 6888:2888
+      - 7888:3888
+    networks: 
+      - example
+
+  kafka0:
+    container_name: kafka0
+    hostname: kafka0
+    image: ${RESPOSITY}/fabric-kafka:${KAFKA_TAG}
+    restart: always 
+    environment:
+      - KAFKA_BROKER_ID=11
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:4181,zookeeper2:6181
+      - KAFKA_MESSAGE_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_example
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper0
+      - zookeeper1
+      - zookeeper2
+    networks: 
+      - example
+
+  kafka1:
+    container_name: kafka1
+    hostname: kafka1
+    image: ${RESPOSITY}/fabric-kafka:${KAFKA_TAG}
+    restart: always
+    environment:
+      - KAFKA_BROKER_ID=12
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+      - KAFKA_MESSAGE_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_example
+    depends_on:
+      - zookeeper0
+      - zookeeper1
+      - zookeeper2
+    ports:
+      - 9192:9092
+    networks: 
+      - example
+
+  kafka2:
+    container_name: kafka2
+    hostname: kafka2
+    image: ${RESPOSITY}/fabric-kafka:${KAFKA_TAG}
+    restart: always
+    environment:
+      - KAFKA_BROKER_ID=13
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:4181,zookeeper2:6181
+      - KAFKA_MESSAGE_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_example
+    depends_on:
+      - zookeeper0
+      - zookeeper1
+      - zookeeper2
+    ports:
+      - 9292:9092
+    networks: 
+      - example
+    
+  kafka3:
+    container_name: kafka3
+    hostname: kafka3
+    image: ${RESPOSITY}/fabric-kafka:${KAFKA_TAG}
+    restart: always
+    environment:
+      - KAFKA_BROKER_ID=14
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:4181,zookeeper2:6181
+      - KAFKA_MESSAGE_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_example
+    depends_on:
+      - zookeeper0
+      - zookeeper1
+      - zookeeper2
+    ports:
+      - 9392:9092
+    networks: 
+      - example

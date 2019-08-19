@@ -1,0 +1,9 @@
+PeerOrgs:
+  - Name: Org3
+    Domain: org3.example.com
+    EnableNodeOUs: true  # 注意，会影响加入通道和实例化链码
+    Specs:
+      - Hostname: peer0
+      - Hostname: ca 
+    Users:
+      Count: 0

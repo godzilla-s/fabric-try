@@ -1,0 +1,49 @@
+version: '2'
+
+volumes: 
+  mysql_data:
+
+networks: 
+  sample:
+
+services:
+  fabric-ca-server:
+    image: hyperledger/fabric-ca:1.4.1
+    container_name: fabric-ca-server
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=fabric-ca-server
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/cacert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/cert.key
+      - FABRIC_CA_SERVER_CFG_AFFILIATIONS_ALLOWREMOVE=true  # 允许删除联盟关系
+      - FABRIC_CA_SERVER_CFG_IDENTITIES_ALLOWREMOVE=true  # 允许删除成员身份
+      - FABRIC_CA_SERVER_DB_TYPE=mysql
+      - FABRIC_CA_SERVER_DB_DATASOURCE=root:123456@tcp(mysql-ca:3306)/fabric_ca?parseTime=true
+      #- FABRIC_CA_SERVER_DB_TLS_CERTFILES=
+      #- FABRIC_CA_SERVER_DB_TLS_CLIENT_CERTFILE=
+      #- FABRIC_CA_SERVER_DB_TLS_CLIENT_KEYFILE=
+    command: sh -c "sleep 15; fabric-ca-server start -b admin:adminpw"
+    volumes:
+      - ./certs/ca:/etc/hyperledger/fabric-ca-server-config
+      #- ./config/fabric-ca-server-mysql.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml 
+    ports:
+      - 7054:7054
+    depends_on: 
+      - mysql-ca
+    networks: 
+      - sample 
+
+  mysql-ca:
+    image: mysql:5.7.20
+    container_name: mysql-ca 
+    #command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8 --explicit_defaults_for_timestamp
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=fabric_ca
+    volumes: 
+      - mysql_data:/var/lib/mysql
+      - ./config/mysql.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    ports: 
+      - 3306:3306
+    networks: 
+      - sample 

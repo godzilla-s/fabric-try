@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderer-org
+  namespace: orderer
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: orderer-org
+  template:
+    metadata:
+      labels:
+        app: orderer-org
+    spec:
+      volumes:
+        - name: genesis-block
+          secret:
+            secretName: hlf-genesis-block 
+        - name: id-cert
+          secret:
+            secretName: hlf-orderer-orderer0-idcert 
+        - name: id-key
+          secret:
+            secretName: hlf-orderer-orderer0-idkey
+        - name: admin-cert
+          secret:
+            secretName: hlf-orderer-orderer0-admin-cert 
+        - name: root-cacert 
+          secret:
+            secretName: hlf-orderer-orderer0-root-ca
+        - name: tlsroot-cacert
+          secret:
+            secretName: hlf-orderer-orderer0-root-tlsca
+        - name: orderer-tls
+          secret:
+            secretName: hlf-orderer-orderer0-tls
+        - name: tlsca-cert
+          secret:
+            secretName: hlf-orderer-orderer0-tlsca-cert
+      containers:
+      - name: peer0-org1
+        image: hyperledger/fabric-orderer:1.4.1
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh 
+          - -c 
+          - |
+            orderer
+        ports:
+        - containerPort: 7050
+          name: request
+          protocol: TCP 
+        envFrom:
+          - configMapRef:
+              name: orderer-org-cm
+        volumeMounts:
+          - mountPath: /var/hyperledger/orderer
+            name: genesis-block 
+          - mountPath: /var/hyperledger/orderer/msp/signcerts 
+            name: id-cert
+          - mountPath: /var/hyperledger/orderer/msp/keystore 
+            name: id-key 
+          - mountPath: /var/hyperledger/orderer/msp/cacerts
+            name: root-cacert
+          - mountPath: /var/hyperledger/orderer/msp/admincerts
+            name: admin-cert
+          - mountPath: /var/hyperledger/orderer/msp/tlscacerts
+            name: tlsroot-cacert
+          - mountPath: /var/hyperledger/orderer/tls/pair
+            name: orderer-tls 
+          - mountPath: /var/hyperledger/orderer/tls
+            name: tlsca-cert
+        resources: {}
